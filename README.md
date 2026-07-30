@@ -18,13 +18,23 @@ is no `pptx2md`.
 
 ## Install
 
+From the Excelano apt repository, which pulls in pandoc and openpyxl for you:
+
+```bash
+curl -fsSL https://excelano.com/apt/setup.sh | sudo sh   # one-time
+sudo apt install office-convert
+```
+
+Or from a clone, which puts each script in `~/bin` under its short name:
+
 ```bash
 sudo apt install pandoc python3-openpyxl
 ./install.sh
 ```
 
-`install.sh` copies each script to `~/bin` under its short name. Uninstall with
-`./uninstall.sh`.
+Uninstall the clone-installed copies with `./uninstall.sh`. To build the
+package yourself, run `packaging/build-deb.sh`; the scripts are
+architecture-independent, so one `_all.deb` serves every machine.
 
 ## Usage
 

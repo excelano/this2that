@@ -1,0 +1,23 @@
+Package: office-convert
+Version: 0.1.0
+Architecture: all
+Maintainer: David M. Anderson <david.anderson@excelano.com>
+Depends: pandoc, python3, python3-openpyxl
+Section: utils
+Priority: optional
+Homepage: https://github.com/excelano/office-convert
+Description: Converters between plain-text sources and Microsoft Office files
+ Five command-line converters between the plain-text formats you author and
+ version and their Microsoft Office counterparts: md2docx and docx2md
+ (Markdown and Word), csv2xlsx and xlsx2csv (CSV and Excel), and md2pptx
+ (Markdown to PowerPoint). PowerPoint is export-only because pandoc writes
+ .pptx but cannot read it.
+ .
+ Each command takes an input file and an optional output path, defaulting to
+ the input name with the new extension. md2docx and md2pptx accept a pandoc
+ reference document as a style template, and csv2xlsx types cells only when
+ the conversion is lossless, so leading-zero codes and long digit runs survive
+ the trip into Excel as text.
+ .
+ The converters reimplement nothing: pandoc does the Markdown, Word, and
+ PowerPoint work, and openpyxl does the Excel work.
