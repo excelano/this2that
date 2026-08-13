@@ -11,11 +11,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# packaging/control is where the version is written down; the installed
+# copies are stamped from it so the number lives in exactly one place.
+VER=$(awk '/^Version:/{print $2}' "$SCRIPT_DIR/packaging/control")
+[ -n "$VER" ] || { echo "no Version: in packaging/control" >&2; exit 1; }
+
 mkdir -p "$HOME/bin"
 
+# The sed stamps __version__ in the Python converters. The shell wrappers
+# carry no such line and pass through unchanged.
 install_one() {
     local src="$1" name="$2"
-    cp "$SCRIPT_DIR/$src" "$HOME/bin/$name"
+    sed "s/^__version__ = .*/__version__ = \"$VER\"/" "$SCRIPT_DIR/$src" > "$HOME/bin/$name"
     chmod +x "$HOME/bin/$name"
     echo "Installed: ~/bin/$name"
 }

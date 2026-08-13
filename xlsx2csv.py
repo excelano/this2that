@@ -15,6 +15,11 @@ from datetime import date, datetime
 
 from openpyxl import load_workbook
 
+# Stamped from packaging/control by install.sh and packaging/build-deb.sh.
+# A checkout is not stamped, so running from the clone reports the dev
+# placeholder rather than claiming a release it is not.
+__version__ = "0.0.0+dev"
+
 
 def fmt(value):
     """Render a cell value as a CSV string."""
@@ -34,6 +39,7 @@ def fmt(value):
 
 def main():
     ap = argparse.ArgumentParser(prog="xlsx2csv", description="Convert an .xlsx worksheet to RFC 4180 CSV.")
+    ap.add_argument("--version", "-V", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("input", help="input .xlsx file")
     ap.add_argument("output", nargs="?", help="output .csv (default: input name with .csv)")
     ap.add_argument("--sheet", help="worksheet name (default: the active sheet)")

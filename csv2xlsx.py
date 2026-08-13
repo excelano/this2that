@@ -29,6 +29,11 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
+# Stamped from packaging/control by install.sh and packaging/build-deb.sh.
+# A checkout is not stamped, so running from the clone reports the dev
+# placeholder rather than claiming a release it is not.
+__version__ = "0.0.0+dev"
+
 # Strings that look numeric but must stay text or Excel corrupts them.
 _LEADING_ZERO = re.compile(r"^-?0\d")          # 007, 00123  (but not 0 or 0.5)
 _PHONE_ISH = re.compile(r"^\+\d")               # +1 555 1234
@@ -121,6 +126,7 @@ def resolve_io(inputs, output, error):
 
 def main():
     ap = argparse.ArgumentParser(prog="csv2xlsx", description="Convert CSV file(s) to a styled .xlsx workbook.")
+    ap.add_argument("--version", "-V", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("inputs", nargs="+", metavar="input", help="input .csv file(s)")
     ap.add_argument("-o", "--output", help="output .xlsx (required for more than two inputs)")
     ap.add_argument("--text", action="store_true", help="write every cell as text; no type inference")

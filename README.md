@@ -51,6 +51,13 @@ xlsx2csv workbook.xlsx --sheet Q3 # -> workbook.csv from the Q3 sheet
 md2pptx deck.md                   # -> deck.pptx
 ```
 
+`csv2xlsx` and `xlsx2csv` report their version with `--version` or `-V`.
+The number is stamped from `packaging/control` when the package is built or
+`install.sh` runs, so a converter run straight out of a clone reports
+`0.0.0+dev` rather than claiming a release it is not. The three pandoc
+wrappers are short enough to sit inside the one-page exemption in the CLI
+flag standard and carry no version flag.
+
 ### Branding the Office output
 
 `md2docx` and `md2pptx` accept a pandoc reference document as a style template.

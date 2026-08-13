@@ -28,8 +28,12 @@ mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/office-convert"
 cp "$CONTROL" "$STAGE/DEBIAN/control"
 
 # Same five commands install.sh puts in ~/bin, under the same short names.
+# The sed stamps __version__ in the Python converters from the same control
+# file $VER came from. The shell wrappers carry no such line and pass
+# through unchanged.
 install_one() {
-    install -m 0755 "$ROOT/$1" "$STAGE/usr/bin/$2"
+    sed "s/^__version__ = .*/__version__ = \"$VER\"/" "$ROOT/$1" > "$STAGE/usr/bin/$2"
+    chmod 0755 "$STAGE/usr/bin/$2"
 }
 install_one md2docx.sh  md2docx
 install_one docx2md.sh  docx2md
