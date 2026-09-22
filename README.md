@@ -39,7 +39,10 @@ sudo apt install pandoc python3-openpyxl python3-odf
 
 Uninstall the clone-installed copies with `./uninstall.sh`. To build the
 package yourself, run `packaging/build-deb.sh`; the scripts are
-architecture-independent, so one `_all.deb` serves every machine.
+architecture-independent, so one `_all.deb` serves every machine. This repo
+has no release automation of its own, so it publishes through
+`excelano-apt`'s `ship-local.sh packaging/build-deb.sh`, which builds, pools,
+prunes, and re-signs the indices in one run.
 
 ## Usage
 
