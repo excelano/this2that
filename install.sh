@@ -2,9 +2,10 @@
 # install.sh - Install the office-convert commands into ~/bin.
 #
 # Copies each converter to ~/bin without its extension, so you invoke them as
-# md2docx, docx2md, csv2xlsx, xlsx2csv, and md2pptx.
+# md2docx, docx2md, csv2xlsx, xlsx2csv, sqlite2csv, and md2pptx.
 #
 # Requires: pandoc (md <-> docx, md -> pptx) and python3-openpyxl (csv <-> xlsx).
+# sqlite2csv uses only the Python standard library.
 #   sudo apt install pandoc python3-openpyxl
 
 set -euo pipefail
@@ -31,6 +32,7 @@ install_one md2docx.sh  md2docx
 install_one docx2md.sh  docx2md
 install_one csv2xlsx.py csv2xlsx
 install_one xlsx2csv.py xlsx2csv
+install_one sqlite2csv.py sqlite2csv
 install_one md2pptx.sh  md2pptx
 
 if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then

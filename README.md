@@ -1,17 +1,19 @@
 # office-convert
 
 Small command-line converters between plain-text source formats and their
-Microsoft Office counterparts. The plain-text side (Markdown, CSV) is the one
-you author and version; the Office side is the export you hand to people who
-live in Word, Excel, and PowerPoint.
+Microsoft Office (or Office-adjacent) counterparts. The plain-text side
+(Markdown, CSV) is the one you author and version; the other side is the
+export you hand to people who live in Word, Excel, PowerPoint, or a SQLite
+database.
 
 | Command | Direction | Engine |
 |---|---|---|
-| `md2docx`  | Markdown → Word `.docx` | pandoc |
-| `docx2md`  | Word `.docx` → Markdown | pandoc |
-| `csv2xlsx` | CSV → Excel `.xlsx`     | openpyxl |
-| `xlsx2csv` | Excel `.xlsx` → CSV     | openpyxl |
-| `md2pptx`  | Markdown → PowerPoint `.pptx` | pandoc |
+| `md2docx`   | Markdown → Word `.docx` | pandoc |
+| `docx2md`   | Word `.docx` → Markdown | pandoc |
+| `csv2xlsx`  | CSV → Excel `.xlsx`     | openpyxl |
+| `xlsx2csv`  | Excel `.xlsx` → CSV     | openpyxl |
+| `sqlite2csv`| SQLite table(s) → CSV   | stdlib `sqlite3` |
+| `md2pptx`   | Markdown → PowerPoint `.pptx` | pandoc |
 
 PowerPoint is export-only: pandoc writes `.pptx` but cannot read it, so there
 is no `pptx2md`.
@@ -48,15 +50,18 @@ docx2md proposal.docx             # -> proposal.md (images to ./media/)
 csv2xlsx data.csv                 # -> data.xlsx (styled, typed)
 csv2xlsx a.csv b.csv -o book.xlsx # -> one sheet per CSV, named by file stem
 xlsx2csv workbook.xlsx --sheet Q3 # -> workbook.csv from the Q3 sheet
+sqlite2csv app.db                 # -> app.csv, if app.db has exactly one table
+sqlite2csv app.db --table users   # -> app.csv from the users table
+sqlite2csv app.db --all -o out/   # -> out/users.csv, out/orders.csv, ...
 md2pptx deck.md                   # -> deck.pptx
 ```
 
-`csv2xlsx` and `xlsx2csv` report their version with `--version` or `-V`.
-The number is stamped from `packaging/control` when the package is built or
-`install.sh` runs, so a converter run straight out of a clone reports
-`0.0.0+dev` rather than claiming a release it is not. The three pandoc
-wrappers are short enough to sit inside the one-page exemption in the CLI
-flag standard and carry no version flag.
+`csv2xlsx`, `xlsx2csv`, and `sqlite2csv` report their version with `--version`
+or `-V`. The number is stamped from `packaging/control` when the package is
+built or `install.sh` runs, so a converter run straight out of a clone
+reports `0.0.0+dev` rather than claiming a release it is not. The three
+pandoc wrappers are short enough to sit inside the one-page exemption in the
+CLI flag standard and carry no version flag.
 
 ### Branding the Office output
 
@@ -80,6 +85,17 @@ Given several CSVs and an `-o` output, `csv2xlsx` writes one workbook with a
 sheet per CSV, titled after each input's filename stem (sanitized and de-duped
 for Excel's sheet-name rules), in the order given. A single input keeps the
 plain `csv2xlsx input [output]` form; only two or more inputs need `-o`.
+
+### SQLite export (sqlite2csv)
+
+`sqlite2csv` uses only the Python standard library — no extra dependency.
+It opens the database read-only, so a bad path errors out instead of
+sqlite3 silently creating a new, empty file. With no `--table`, it exports
+the database's only table if there is exactly one; with more than one it
+errors and lists the table names, same as `xlsx2csv` does for sheets.
+`--all` dumps every table to its own CSV in the output directory (`-o`,
+default the current directory), and `--list` prints the table names and
+exits. BLOB columns are written as hex strings.
 
 ### Slide division (md2pptx)
 
