@@ -27,7 +27,7 @@ chmod 0755 "$STAGE"
 mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/office-convert"
 cp "$CONTROL" "$STAGE/DEBIAN/control"
 
-# Same six commands install.sh puts in ~/bin, under the same short names.
+# Same eight commands install.sh puts in ~/bin, under the same short names.
 # The sed stamps __version__ in the Python converters from the same control
 # file $VER came from. The shell wrappers carry no such line and pass
 # through unchanged.
@@ -35,12 +35,14 @@ install_one() {
     sed "s/^__version__ = .*/__version__ = \"$VER\"/" "$ROOT/$1" > "$STAGE/usr/bin/$2"
     chmod 0755 "$STAGE/usr/bin/$2"
 }
-install_one md2docx.sh    md2docx
-install_one docx2md.sh    docx2md
-install_one csv2xlsx.py   csv2xlsx
-install_one xlsx2csv.py   xlsx2csv
-install_one sqlite2csv.py sqlite2csv
-install_one md2pptx.sh    md2pptx
+install_one md2docx.sh     md2docx
+install_one docx2md.sh     docx2md
+install_one csv2xlsx.py    csv2xlsx
+install_one xlsx2csv.py    xlsx2csv
+install_one sqlite2csv.py  sqlite2csv
+install_one sqlite2xlsx.py sqlite2xlsx
+install_one sqlite2ods.py  sqlite2ods
+install_one md2pptx.sh     md2pptx
 
 install -m 0644 "$ROOT/LICENSE"   "$STAGE/usr/share/doc/office-convert/copyright"
 install -m 0644 "$ROOT/README.md" "$STAGE/usr/share/doc/office-convert/README.md"

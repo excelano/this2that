@@ -3,24 +3,27 @@
 Small command-line converters between plain-text source formats and their
 Microsoft Office (or Office-adjacent) counterparts. The plain-text side
 (Markdown, CSV) is the one you author and version; the other side is the
-export you hand to people who live in Word, Excel, PowerPoint, or a SQLite
-database.
+export you hand to people who live in Word, Excel, PowerPoint, LibreOffice
+Calc, or a SQLite database.
 
 | Command | Direction | Engine |
 |---|---|---|
-| `md2docx`   | Markdown → Word `.docx` | pandoc |
-| `docx2md`   | Word `.docx` → Markdown | pandoc |
-| `csv2xlsx`  | CSV → Excel `.xlsx`     | openpyxl |
-| `xlsx2csv`  | Excel `.xlsx` → CSV     | openpyxl |
-| `sqlite2csv`| SQLite table(s) → CSV   | stdlib `sqlite3` |
-| `md2pptx`   | Markdown → PowerPoint `.pptx` | pandoc |
+| `md2docx`    | Markdown → Word `.docx`      | pandoc |
+| `docx2md`    | Word `.docx` → Markdown      | pandoc |
+| `csv2xlsx`   | CSV → Excel `.xlsx`          | openpyxl |
+| `xlsx2csv`   | Excel `.xlsx` → CSV          | openpyxl |
+| `sqlite2csv` | SQLite table(s) → CSV        | stdlib `sqlite3` |
+| `sqlite2xlsx`| SQLite table(s) → Excel `.xlsx` | openpyxl |
+| `sqlite2ods` | SQLite table(s) → OpenDocument `.ods` | odfpy |
+| `md2pptx`    | Markdown → PowerPoint `.pptx` | pandoc |
 
 PowerPoint is export-only: pandoc writes `.pptx` but cannot read it, so there
 is no `pptx2md`.
 
 ## Install
 
-From the Excelano apt repository, which pulls in pandoc and openpyxl for you:
+From the Excelano apt repository, which pulls in pandoc, openpyxl, and odfpy
+for you:
 
 ```bash
 curl -fsSL https://excelano.com/apt/setup.sh | sudo sh   # one-time
@@ -30,7 +33,7 @@ sudo apt install office-convert
 Or from a clone, which puts each script in `~/bin` under its short name:
 
 ```bash
-sudo apt install pandoc python3-openpyxl
+sudo apt install pandoc python3-openpyxl python3-odf
 ./install.sh
 ```
 
@@ -53,15 +56,19 @@ xlsx2csv workbook.xlsx --sheet Q3 # -> workbook.csv from the Q3 sheet
 sqlite2csv app.db                 # -> app.csv, if app.db has exactly one table
 sqlite2csv app.db --table users   # -> app.csv from the users table
 sqlite2csv app.db --all -o out/   # -> out/users.csv, out/orders.csv, ...
+sqlite2xlsx app.db                # -> app.xlsx, one sheet per table
+sqlite2xlsx app.db --table users  # -> app.xlsx, single sheet from users
+sqlite2ods app.db                 # -> app.ods, one sheet per table
 md2pptx deck.md                   # -> deck.pptx
 ```
 
-`csv2xlsx`, `xlsx2csv`, and `sqlite2csv` report their version with `--version`
-or `-V`. The number is stamped from `packaging/control` when the package is
-built or `install.sh` runs, so a converter run straight out of a clone
-reports `0.0.0+dev` rather than claiming a release it is not. The three
-pandoc wrappers are short enough to sit inside the one-page exemption in the
-CLI flag standard and carry no version flag.
+`csv2xlsx`, `xlsx2csv`, `sqlite2csv`, `sqlite2xlsx`, and `sqlite2ods` report
+their version with `--version` or `-V`. The number is stamped from
+`packaging/control` when the package is built or `install.sh` runs, so a
+converter run straight out of a clone reports `0.0.0+dev` rather than
+claiming a release it is not. The three pandoc wrappers are short enough to
+sit inside the one-page exemption in the CLI flag standard and carry no
+version flag.
 
 ### Branding the Office output
 
@@ -96,6 +103,16 @@ errors and lists the table names, same as `xlsx2csv` does for sheets.
 `--all` dumps every table to its own CSV in the output directory (`-o`,
 default the current directory), and `--list` prints the table names and
 exits. BLOB columns are written as hex strings.
+
+### SQLite export (sqlite2xlsx, sqlite2ods)
+
+Both write one workbook, one sheet per table, named after the table
+(sanitized and de-duped for the format's sheet-name rules); `--table` writes
+a single-sheet document from just that table instead. BLOB columns are
+written as hex strings, same as `sqlite2csv`. `sqlite2xlsx` sheets get the
+same bold frozen header, autofilter, and auto-fitted column widths as
+`csv2xlsx`; `sqlite2ods` sheets get a bold header only, since odfpy has no
+straightforward API for freeze panes or autofilter.
 
 ### Slide division (md2pptx)
 
