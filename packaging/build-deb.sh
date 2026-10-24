@@ -1,5 +1,5 @@
 #!/bin/bash
-# build-deb.sh — build the office-convert .deb. Prints the .deb path.
+# build-deb.sh — build the this2that .deb. Prints the .deb path.
 #
 # Author: David M. Anderson
 # Built with AI assistance (Claude, Anthropic)
@@ -8,8 +8,8 @@
 # serves every machine. Version comes from packaging/control, which is the only
 # place it is written down.
 #
-# Publish it with the excelano-apt repo:
-#   ./add-deb.sh "$(~/office-convert/packaging/build-deb.sh)" && ./rebuild.sh
+# Publish it from the excelano-apt repo:
+#   ./ship-local.sh ~/this2that/packaging/build-deb.sh
 
 set -euo pipefail
 
@@ -27,7 +27,7 @@ STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
 chmod 0755 "$STAGE"
 
-mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/office-convert"
+mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/this2that"
 cp "$CONTROL" "$STAGE/DEBIAN/control"
 
 # Same nine commands install.sh puts in ~/bin, under the same short names.
@@ -48,9 +48,9 @@ install_one sqlite2ods.py  sqlite2ods
 install_one parquet2csv.sh parquet2csv
 install_one md2pptx.sh     md2pptx
 
-install -m 0644 "$ROOT/LICENSE"   "$STAGE/usr/share/doc/office-convert/copyright"
-install -m 0644 "$ROOT/README.md" "$STAGE/usr/share/doc/office-convert/README.md"
+install -m 0644 "$ROOT/LICENSE"   "$STAGE/usr/share/doc/this2that/copyright"
+install -m 0644 "$ROOT/README.md" "$STAGE/usr/share/doc/this2that/README.md"
 
-OUT="/tmp/office-convert_${VER}_all.deb"
+OUT="/tmp/this2that_${VER}_all.deb"
 dpkg-deb --build --root-owner-group "$STAGE" "$OUT" >/dev/null
 echo "$OUT"

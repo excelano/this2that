@@ -1,12 +1,15 @@
-Package: office-convert
+Package: this2that
 Version: 0.4.0
 Architecture: all
 Maintainer: David M. Anderson <david.anderson@excelano.com>
 Depends: pandoc, python3, python3-openpyxl, python3-odf
+Provides: office-convert
+Breaks: office-convert (<< 0.4.0)
+Replaces: office-convert (<< 0.4.0)
 Section: utils
 Priority: optional
-Homepage: https://github.com/excelano/office-convert
-Description: Converters between plain-text sources and Microsoft Office files
+Homepage: https://github.com/excelano/this2that
+Description: Converters between plain-text, Office, and data file formats
  Nine command-line converters between the plain-text formats you author and
  version and their Microsoft Office (or Office-adjacent) counterparts:
  md2docx and docx2md (Markdown and Word), csv2xlsx and xlsx2csv (CSV and

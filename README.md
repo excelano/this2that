@@ -1,4 +1,4 @@
-# office-convert
+# this2that
 
 Small command-line converters between plain-text source formats and their
 Microsoft Office (or Office-adjacent) counterparts. The plain-text side
@@ -29,7 +29,7 @@ for you:
 
 ```bash
 curl -fsSL https://excelano.com/apt/setup.sh | sudo sh   # one-time
-sudo apt install office-convert
+sudo apt install this2that
 ```
 
 Or from a clone, which puts each script in `~/bin` under its short name:

@@ -1,5 +1,5 @@
 #!/bin/bash
-# install.sh - Install the office-convert commands into ~/bin.
+# install.sh - Install the this2that commands into ~/bin.
 #
 # Author: David M. Anderson
 # Built with AI assistance (Claude, Anthropic)

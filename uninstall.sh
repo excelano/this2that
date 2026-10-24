@@ -1,5 +1,5 @@
 #!/bin/bash
-# uninstall.sh - Remove the office-convert commands from ~/bin.
+# uninstall.sh - Remove the this2that commands from ~/bin.
 #
 # Author: David M. Anderson
 # Built with AI assistance (Claude, Anthropic)
