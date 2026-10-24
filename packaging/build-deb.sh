@@ -1,6 +1,9 @@
 #!/bin/bash
 # build-deb.sh — build the office-convert .deb. Prints the .deb path.
 #
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
+#
 # The scripts are architecture-independent, so this produces one _all.deb that
 # serves every machine. Version comes from packaging/control, which is the only
 # place it is written down.
@@ -27,7 +30,7 @@ chmod 0755 "$STAGE"
 mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/office-convert"
 cp "$CONTROL" "$STAGE/DEBIAN/control"
 
-# Same eight commands install.sh puts in ~/bin, under the same short names.
+# Same nine commands install.sh puts in ~/bin, under the same short names.
 # The sed stamps __version__ in the Python converters from the same control
 # file $VER came from. The shell wrappers carry no such line and pass
 # through unchanged.
@@ -42,6 +45,7 @@ install_one xlsx2csv.py    xlsx2csv
 install_one sqlite2csv.py  sqlite2csv
 install_one sqlite2xlsx.py sqlite2xlsx
 install_one sqlite2ods.py  sqlite2ods
+install_one parquet2csv.sh parquet2csv
 install_one md2pptx.sh     md2pptx
 
 install -m 0644 "$ROOT/LICENSE"   "$STAGE/usr/share/doc/office-convert/copyright"

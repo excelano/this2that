@@ -1,11 +1,14 @@
 #!/bin/bash
 # uninstall.sh - Remove the office-convert commands from ~/bin.
 #
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
+#
 # Usage: ./uninstall.sh
 
 set -euo pipefail
 
-for name in md2docx docx2md csv2xlsx xlsx2csv sqlite2csv sqlite2xlsx sqlite2ods md2pptx; do
+for name in md2docx docx2md csv2xlsx xlsx2csv sqlite2csv sqlite2xlsx sqlite2ods parquet2csv md2pptx; do
     target="$HOME/bin/$name"
     if [ -e "$target" ]; then
         rm -f "$target"

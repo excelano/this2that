@@ -1,13 +1,17 @@
 #!/bin/bash
 # install.sh - Install the office-convert commands into ~/bin.
 #
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
+#
 # Copies each converter to ~/bin without its extension, so you invoke them as
 # md2docx, docx2md, csv2xlsx, xlsx2csv, sqlite2csv, sqlite2xlsx, sqlite2ods,
-# and md2pptx.
+# parquet2csv, and md2pptx.
 #
 # Requires: pandoc (md <-> docx, md -> pptx), python3-openpyxl (csv <-> xlsx,
 # sqlite -> xlsx), and python3-odf (sqlite -> ods). sqlite2csv uses only the
-# Python standard library.
+# Python standard library. parquet2csv needs the DuckDB CLI, which Debian does
+# not package (https://duckdb.org/docs/installation).
 #   sudo apt install pandoc python3-openpyxl python3-odf
 
 set -euo pipefail
@@ -37,6 +41,7 @@ install_one xlsx2csv.py xlsx2csv
 install_one sqlite2csv.py sqlite2csv
 install_one sqlite2xlsx.py sqlite2xlsx
 install_one sqlite2ods.py sqlite2ods
+install_one parquet2csv.sh parquet2csv
 install_one md2pptx.sh  md2pptx
 
 if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
@@ -47,3 +52,4 @@ fi
 command -v pandoc >/dev/null || echo "Warning: pandoc not found (needed for md/docx/pptx)."
 python3 -c "import openpyxl" 2>/dev/null || echo "Warning: python3-openpyxl not found (needed for csv/xlsx/sqlite2xlsx)."
 python3 -c "import odf" 2>/dev/null || echo "Warning: python3-odf not found (needed for sqlite2ods)."
+command -v duckdb >/dev/null || echo "Warning: duckdb not found (needed for parquet2csv)."

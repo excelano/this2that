@@ -3,8 +3,9 @@
 Small command-line converters between plain-text source formats and their
 Microsoft Office (or Office-adjacent) counterparts. The plain-text side
 (Markdown, CSV) is the one you author and version; the other side is the
-export you hand to people who live in Word, Excel, PowerPoint, LibreOffice
-Calc, or a SQLite database.
+export you hand to people who live in Word, Excel, PowerPoint, or LibreOffice
+Calc. The SQLite and Parquet converters run the other way, turning a
+database or data file into CSV or a spreadsheet someone can open.
 
 | Command | Direction | Engine |
 |---|---|---|
@@ -15,6 +16,7 @@ Calc, or a SQLite database.
 | `sqlite2csv` | SQLite table(s) → CSV        | stdlib `sqlite3` |
 | `sqlite2xlsx`| SQLite table(s) → Excel `.xlsx` | openpyxl |
 | `sqlite2ods` | SQLite table(s) → OpenDocument `.ods` | odfpy |
+| `parquet2csv`| Parquet → CSV                | DuckDB CLI |
 | `md2pptx`    | Markdown → PowerPoint `.pptx` | pandoc |
 
 PowerPoint is export-only: pandoc writes `.pptx` but cannot read it, so there
@@ -36,6 +38,11 @@ Or from a clone, which puts each script in `~/bin` under its short name:
 sudo apt install pandoc python3-openpyxl python3-odf
 ./install.sh
 ```
+
+`parquet2csv` also needs the DuckDB CLI, which Debian does not package, so
+neither route installs it; get it from
+[duckdb.org](https://duckdb.org/docs/installation). The other converters
+work without it.
 
 Uninstall the clone-installed copies with `./uninstall.sh`. To build the
 package yourself, run `packaging/build-deb.sh`; the scripts are
@@ -62,6 +69,7 @@ sqlite2csv app.db --all -o out/   # -> out/users.csv, out/orders.csv, ...
 sqlite2xlsx app.db                # -> app.xlsx, one sheet per table
 sqlite2xlsx app.db --table users  # -> app.xlsx, single sheet from users
 sqlite2ods app.db                 # -> app.ods, one sheet per table
+parquet2csv events.parquet        # -> events.csv
 md2pptx deck.md                   # -> deck.pptx
 ```
 
@@ -69,9 +77,9 @@ md2pptx deck.md                   # -> deck.pptx
 their version with `--version` or `-V`. The number is stamped from
 `packaging/control` when the package is built or `install.sh` runs, so a
 converter run straight out of a clone reports `0.0.0+dev` rather than
-claiming a release it is not. The three pandoc wrappers are short enough to
-sit inside the one-page exemption in the CLI flag standard and carry no
-version flag.
+claiming a release it is not. The pandoc wrappers and `parquet2csv` are
+short enough to sit inside the one-page exemption in the CLI flag standard
+and carry no version flag.
 
 ### Branding the Office output
 
@@ -116,6 +124,13 @@ written as hex strings, same as `sqlite2csv`. `sqlite2xlsx` sheets get the
 same bold frozen header, autofilter, and auto-fitted column widths as
 `csv2xlsx`; `sqlite2ods` sheets get a bold header only, since odfpy has no
 straightforward API for freeze panes or autofilter.
+
+### Parquet export (parquet2csv)
+
+`parquet2csv` hands the reading and writing to DuckDB and only decides how
+each column lands in a CSV cell. Scalar columns are written as DuckDB
+formats them; nested columns (struct, map, union, list) are written as JSON
+text, and BLOB columns as hex strings, same as the SQLite converters.
 
 ### Slide division (md2pptx)
 
