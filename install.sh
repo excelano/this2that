@@ -5,11 +5,12 @@
 # Built with AI assistance (Claude, Anthropic)
 #
 # Copies each converter to ~/bin without its extension, so you invoke them as
-# md2docx, docx2md, csv2xlsx, xlsx2csv, sqlite2csv, sqlite2xlsx, sqlite2ods,
-# parquet2csv, and md2pptx.
+# md2docx, docx2md, md2pptx, docx2odt, odt2docx, csv2xlsx, xlsx2csv, xlsx2ods,
+# ods2xlsx, sqlite2csv, sqlite2xlsx, sqlite2ods, and parquet2csv.
 #
-# Requires: pandoc (md <-> docx, md -> pptx), python3-openpyxl (csv <-> xlsx,
-# sqlite -> xlsx), and python3-odf (sqlite -> ods). sqlite2csv uses only the
+# Requires: pandoc (md <-> docx, md -> pptx, docx <-> odt), python3-openpyxl
+# (csv <-> xlsx, xlsx <-> ods, sqlite -> xlsx), and python3-odf (xlsx <-> ods,
+# sqlite -> ods). sqlite2csv uses only the
 # Python standard library. parquet2csv needs the DuckDB CLI, which Debian does
 # not package (https://duckdb.org/docs/installation).
 #   sudo apt install pandoc python3-openpyxl python3-odf
@@ -43,13 +44,17 @@ install_one sqlite2xlsx.py sqlite2xlsx
 install_one sqlite2ods.py sqlite2ods
 install_one parquet2csv.sh parquet2csv
 install_one md2pptx.sh  md2pptx
+install_one docx2odt.sh docx2odt
+install_one odt2docx.py odt2docx
+install_one xlsx2ods.py xlsx2ods
+install_one ods2xlsx.py ods2xlsx
 
 if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
     echo 'export PATH="$HOME/bin:$PATH"' >> "$HOME/.bashrc"
     echo "Added ~/bin to PATH in .bashrc (restart shell or: source ~/.bashrc)"
 fi
 
-command -v pandoc >/dev/null || echo "Warning: pandoc not found (needed for md/docx/pptx)."
-python3 -c "import openpyxl" 2>/dev/null || echo "Warning: python3-openpyxl not found (needed for csv/xlsx/sqlite2xlsx)."
-python3 -c "import odf" 2>/dev/null || echo "Warning: python3-odf not found (needed for sqlite2ods)."
+command -v pandoc >/dev/null || echo "Warning: pandoc not found (needed for md/docx/pptx/odt)."
+python3 -c "import openpyxl" 2>/dev/null || echo "Warning: python3-openpyxl not found (needed for csv/xlsx/ods/sqlite2xlsx)."
+python3 -c "import odf" 2>/dev/null || echo "Warning: python3-odf not found (needed for xlsx2ods, ods2xlsx, sqlite2ods)."
 command -v duckdb >/dev/null || echo "Warning: duckdb not found (needed for parquet2csv)."

@@ -30,7 +30,7 @@ chmod 0755 "$STAGE"
 mkdir -p "$STAGE/DEBIAN" "$STAGE/usr/bin" "$STAGE/usr/share/doc/this2that"
 cp "$CONTROL" "$STAGE/DEBIAN/control"
 
-# Same nine commands install.sh puts in ~/bin, under the same short names.
+# Same thirteen commands install.sh puts in ~/bin, under the same short names.
 # The sed stamps __version__ in the Python converters from the same control
 # file $VER came from. The shell wrappers carry no such line and pass
 # through unchanged.
@@ -47,6 +47,10 @@ install_one sqlite2xlsx.py sqlite2xlsx
 install_one sqlite2ods.py  sqlite2ods
 install_one parquet2csv.sh parquet2csv
 install_one md2pptx.sh     md2pptx
+install_one docx2odt.sh    docx2odt
+install_one odt2docx.py    odt2docx
+install_one xlsx2ods.py    xlsx2ods
+install_one ods2xlsx.py    ods2xlsx
 
 install -m 0644 "$ROOT/LICENSE"   "$STAGE/usr/share/doc/this2that/copyright"
 install -m 0644 "$ROOT/README.md" "$STAGE/usr/share/doc/this2that/README.md"

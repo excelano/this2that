@@ -8,7 +8,8 @@
 
 set -euo pipefail
 
-for name in md2docx docx2md csv2xlsx xlsx2csv sqlite2csv sqlite2xlsx sqlite2ods parquet2csv md2pptx; do
+for name in md2docx docx2md csv2xlsx xlsx2csv sqlite2csv sqlite2xlsx sqlite2ods parquet2csv md2pptx \
+    docx2odt odt2docx xlsx2ods ods2xlsx; do
     target="$HOME/bin/$name"
     if [ -e "$target" ]; then
         rm -f "$target"

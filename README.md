@@ -5,7 +5,9 @@ Microsoft Office (or Office-adjacent) counterparts. The plain-text side
 (Markdown, CSV) is the one you author and version; the other side is the
 export you hand to people who live in Word, Excel, PowerPoint, or LibreOffice
 Calc. The SQLite and Parquet converters run the other way, turning a
-database or data file into CSV or a spreadsheet someone can open.
+database or data file into CSV or a spreadsheet someone can open, and the
+OpenDocument converters move Word and Excel files to and from LibreOffice's
+formats without using LibreOffice.
 
 | Command | Direction | Engine |
 |---|---|---|
@@ -18,9 +20,13 @@ database or data file into CSV or a spreadsheet someone can open.
 | `sqlite2ods` | SQLite table(s) → OpenDocument `.ods` | odfpy |
 | `parquet2csv`| Parquet → CSV                | DuckDB CLI |
 | `md2pptx`    | Markdown → PowerPoint `.pptx` | pandoc |
+| `docx2odt`   | Word `.docx` → OpenDocument `.odt` | pandoc |
+| `odt2docx`   | OpenDocument `.odt` → Word `.docx` | pandoc |
+| `xlsx2ods`   | Excel `.xlsx` → OpenDocument `.ods` | openpyxl, odfpy |
+| `ods2xlsx`   | OpenDocument `.ods` → Excel `.xlsx` | odfpy, openpyxl |
 
 PowerPoint is export-only: pandoc writes `.pptx` but cannot read it, so there
-is no `pptx2md`.
+is no `pptx2md`, and for the same reason no `pptx2odp`.
 
 ## Install
 
@@ -71,21 +77,27 @@ sqlite2xlsx app.db --table users  # -> app.xlsx, single sheet from users
 sqlite2ods app.db                 # -> app.ods, one sheet per table
 parquet2csv events.parquet        # -> events.csv
 md2pptx deck.md                   # -> deck.pptx
+docx2odt proposal.docx            # -> proposal.odt
+odt2docx minutes.odt              # -> minutes.docx
+xlsx2ods budget.xlsx              # -> budget.ods, formulas rewritten
+ods2xlsx budget.ods               # -> budget.xlsx, formulas rewritten
 ```
 
-`csv2xlsx`, `xlsx2csv`, `sqlite2csv`, `sqlite2xlsx`, and `sqlite2ods` report
-their version with `--version` or `-V`. The number is stamped from
+The Python converters (`csv2xlsx`, `xlsx2csv`, `xlsx2ods`, `ods2xlsx`,
+`odt2docx`, and the three `sqlite2*`) report their version with `--version`
+or `-V`. The number is stamped from
 `packaging/control` when the package is built or `install.sh` runs, so a
 converter run straight out of a clone reports `0.0.0+dev` rather than
-claiming a release it is not. The pandoc wrappers and `parquet2csv` are
-short enough to sit inside the one-page exemption in the CLI flag standard
-and carry no version flag.
+claiming a release it is not. The shell wrappers (`md2docx`, `docx2md`,
+`md2pptx`, `docx2odt`, and `parquet2csv`) are short enough to sit inside the
+one-page exemption in the CLI flag standard and carry no version flag.
 
 ### Branding the Office output
 
-`md2docx` and `md2pptx` accept a pandoc reference document as a style template.
-Set `REFERENCE_DOC`, or drop a `reference.docx` / `reference.pptx` next to the
-input and it is picked up automatically.
+`md2docx`, `md2pptx`, `docx2odt`, and `odt2docx` accept a pandoc reference
+document as a style template. Set `REFERENCE_DOC`, or drop a reference file of
+the output's type (`reference.docx`, `reference.pptx`, or `reference.odt`)
+next to the input and it is picked up automatically.
 
 ```bash
 REFERENCE_DOC=~/templates/excelano.docx md2docx report.md
@@ -131,6 +143,47 @@ straightforward API for freeze panes or autofilter.
 each column lands in a CSV cell. Scalar columns are written as DuckDB
 formats them; nested columns (struct, map, union, list) are written as JSON
 text, and BLOB columns as hex strings, same as the SQLite converters.
+
+### Word and OpenDocument text (docx2odt, odt2docx)
+
+Both go through pandoc, so a document's structure comes across (headings,
+lists, tables, images, links, footnotes) and its look does not: page layout,
+headers and footers, section settings, tracked changes, and custom styles are
+left behind, same as `docx2md`. pandoc's ODT reader drops a table's heading
+rows and skips merged-away cells, which would lose the first row of most
+Writer tables and shift the cells after a merge into the wrong column, so
+`odt2docx` rewrites its input first: heading rows read as ordinary first rows
+and each merged-away cell as an empty one. The text and column positions
+survive; the heading styling and the merge do not.
+
+### Excel and OpenDocument spreadsheets (xlsx2ods, ods2xlsx)
+
+Every sheet comes across with typed cells (number, percentage, date, time,
+boolean, text), merged cells, named ranges, and formulas. Formulas are
+rewritten between Excel's syntax and OpenFormula: references (`Sheet!A1:B2`
+and `[$Sheet.A1:.B2]`), argument separators, array constants, union and
+intersection operators, and function names, including the `_xlfn.` and
+`COM.MICROSOFT.` forms the two use for newer functions. The function mapping
+follows what LibreOffice reads and writes, and arguments OpenFormula lets a
+call leave off that Excel requires (`ROUND(x)`) are filled in.
+
+A formula with no equivalent on the other side keeps its last computed value,
+and the converter names the cell on stderr. That covers structured table
+references (`Table1[Units]`), links to other workbooks, spill references
+(`A1#`), and functions one side lacks (`TEXTBEFORE`, `LAMBDA`, or
+LibreOffice's own `EASTERSUNDAY`). Excel functions LibreOffice preserved
+without evaluating them come back to Excel intact.
+
+`xlsx2ods` stores each formula with the result Excel saved, and writes
+Excel's matching rules into the document: criteria in `COUNTIF`, `MATCH`, and
+the lookups use wildcards and ignore case, where an OpenDocument file that
+does not say so uses case-sensitive regular expressions. `ods2xlsx` writes
+formulas without a saved result, because openpyxl cannot store one; Excel and
+LibreOffice compute them on open, but a reader that only looks at saved values
+(`xlsx2csv` among them) sees those cells empty until a spreadsheet application
+has saved the file. It warns when the source document matched criteria as
+regular expressions. Styling, column widths, charts, conditional formatting,
+and pivot tables are not carried in either direction.
 
 ### Slide division (md2pptx)
 
