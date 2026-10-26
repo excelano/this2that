@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
 """sqlite2csv - Dump SQLite tables to RFC 4180 CSV.
 
 Usage: sqlite2csv <input.db> [output.csv] [--table NAME] [--list]

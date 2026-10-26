@@ -128,7 +128,7 @@ def main():
     ap = argparse.ArgumentParser(prog="csv2xlsx", description="Convert CSV file(s) to a styled .xlsx workbook.")
     ap.add_argument("--version", "-V", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("inputs", nargs="+", metavar="input", help="input .csv file(s)")
-    ap.add_argument("-o", "--output", help="output .xlsx (required for more than two inputs)")
+    ap.add_argument("-o", "--output", help="output .xlsx; required for two or more inputs (two bare paths are read as input and output)")
     ap.add_argument("--text", action="store_true", help="write every cell as text; no type inference")
     ap.add_argument("--no-header", action="store_true", help="treat the first row as data, not a header")
     args = ap.parse_args()

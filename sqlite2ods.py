@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
 """sqlite2ods - Convert a SQLite database to an OpenDocument .ods spreadsheet.
 
 Usage: sqlite2ods <input.db> [output.ods] [--table NAME]

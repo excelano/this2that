@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
 """sqlite2xlsx - Convert a SQLite database to a styled Excel .xlsx workbook.
 
 Usage: sqlite2xlsx <input.db> [output.xlsx] [--table NAME]

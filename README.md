@@ -84,7 +84,7 @@ ods2xlsx budget.ods               # -> budget.xlsx, formulas rewritten
 ```
 
 The Python converters (`csv2xlsx`, `xlsx2csv`, `xlsx2ods`, `ods2xlsx`,
-`odt2docx`, and the three `sqlite2*`) report their version with `--version`
+`odt2docx`, and the `sqlite2*` converters) report their version with `--version`
 or `-V`. The number is stamped from
 `packaging/control` when the package is built or `install.sh` runs, so a
 converter run straight out of a clone reports `0.0.0+dev` rather than
