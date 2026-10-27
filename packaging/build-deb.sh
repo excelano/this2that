@@ -6,10 +6,8 @@
 #
 # The scripts are architecture-independent, so this produces one _all.deb that
 # serves every machine. Version comes from packaging/control, which is the only
-# place it is written down.
-#
-# Publish it from the excelano-apt repo:
-#   ./ship-local.sh ~/this2that/packaging/build-deb.sh
+# place it is written down. build-release runs this and reads the .deb path
+# from the last line of stdout, so nothing may print after it.
 
 set -euo pipefail
 
