@@ -5,7 +5,8 @@ Maintainer: David M. Anderson <david.anderson@excelano.com>
 Depends: pandoc, python3, python3-openpyxl, python3-odf
 Provides: office-convert
 Breaks: office-convert (<< 0.4.0)
-Replaces: office-convert (<< 0.4.0)
+Conflicts: xlsx2csv
+Replaces: office-convert (<< 0.4.0), xlsx2csv
 Section: utils
 Priority: optional
 Homepage: https://github.com/excelano/this2that

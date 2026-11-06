@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Author: David M. Anderson
+# Built with AI assistance (Claude, Anthropic)
 """xlsx2csv - Convert an Excel .xlsx worksheet to RFC 4180 CSV.
 
 Usage: xlsx2csv <input.xlsx> [output.csv] [--sheet NAME] [--list]
@@ -12,6 +14,7 @@ import csv
 import re
 import sys
 from datetime import date, datetime
+from decimal import Decimal
 
 from openpyxl import load_workbook
 
@@ -34,6 +37,9 @@ def fmt(value):
         return value.isoformat()
     if isinstance(value, bool):
         return "true" if value else "false"
+    if isinstance(value, float):
+        # Positional notation with the shortest digits that round-trip the float.
+        return format(Decimal(repr(value)), "f")
     return str(value)
 
 
