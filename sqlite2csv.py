@@ -16,6 +16,7 @@ import csv
 import re
 import sqlite3
 import sys
+from decimal import Decimal
 from pathlib import Path
 
 # Stamped from packaging/control by install.sh and packaging/build-deb.sh.
@@ -30,6 +31,9 @@ def fmt(value):
         return ""
     if isinstance(value, bytes):
         return value.hex()
+    if isinstance(value, float):
+        # Positional notation with the shortest digits that round-trip the float.
+        return format(Decimal(repr(value)), "f")
     return str(value)
 
 
