@@ -52,11 +52,7 @@ work without it.
 
 Uninstall the clone-installed copies with `./uninstall.sh`. To build the
 package yourself, run `packaging/build-deb.sh`; the scripts are
-architecture-independent, so one `_all.deb` serves every machine. A release
-goes through the Excelano shipping apps: `build-release` bumps `Version:` in
-`packaging/control`, builds the package with `packaging/build-deb.sh`, tags,
-and creates the GitHub release, and `apt-ship this2that v<version>` publishes
-that release's `.deb` to the apt repository.
+architecture-independent, so one `_all.deb` serves every machine.
 
 ## Usage
 
@@ -191,3 +187,7 @@ and pivot tables are not carried in either direction.
 Slides break on a heading at the slide level or a horizontal rule (`---`), the
 same rule the Axe Markdown slide viewer uses — so one `.md` both presents in the
 browser and exports to PowerPoint here.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
